@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import './user_page.dart';
 import './discoverer_page.dart';
 import './contacts_page.dart';
@@ -168,6 +169,7 @@ class _IndexPageState extends State<IndexPage> {
             }
           });
         },
+        scrollDirection: Axis.horizontal,
       ),
       bottomNavigationBar: BottomNavigationBar(
         items: items,

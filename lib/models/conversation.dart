@@ -7,6 +7,7 @@
 import 'package:flutter/foundation.dart';
 
 const List<Conversation> mockConversationData = [
+  const Conversation(avatar: "", title: "", updateAt: ""),
   const Conversation(
       avatar: 'assets/images/ic_file_transfer.png',
       title: '文件传输助手',

@@ -1,3 +1,4 @@
+import 'package:com_app_wechat/constants.dart';
 import 'package:com_app_wechat/models/conversation.dart';
 import 'package:com_app_wechat/constants.dart' show Constants;
 import 'package:flutter/material.dart';
@@ -5,16 +6,49 @@ import 'package:flutter/material.dart';
 class WeChatPage extends StatelessWidget {
   static const String routeName = "/WeChat";
 
-  _buildListView() {
+  Widget _buildListView() {
     return ListView.separated(
-      padding: EdgeInsets.all(16.0),
       itemCount: mockConversationData.length,
       itemBuilder: (BuildContext context, int index) {
+        if (index == 0) {
+          //TODO: Device值依赖后台传递。
+          return _buildDeviceItem(Device.MAC);
+        }
         return _buildListTile(mockConversationData[index]);
       },
       separatorBuilder: (context, index) {
         return Divider(height: 1.0);
       },
+    );
+  }
+
+  Widget _buildDeviceItem(Device device) {
+    /// 图标名称
+    int iconName = device == Device.MAC ? 0xe61c : 0xe6b3;
+
+    ///系统名称
+    String deviceName = device == Device.MAC ? "Mac" : "Windows";
+
+    return Container(
+      padding:
+          EdgeInsets.only(left: 24.0, top: 10.0, right: 24.0, bottom: 10.0),
+      color: Color(AppColors.DeviceInfoItemBg),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: <Widget>[
+          Icon(
+            IconData(iconName, fontFamily: Constants.WeChatIconFontFamily),
+            color: Colors.grey,
+            size: 18,
+          ),
+          SizedBox(width: 24.0),
+          Text(
+            "$deviceName 微信已登录，手机通知关闭",
+            style: TextStyle(color: Colors.grey),
+          ),
+        ],
+      ),
     );
   }
 
