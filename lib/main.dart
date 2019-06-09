@@ -8,7 +8,9 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       home: IndexPage(),
-      // theme: ThemeData(appBarTheme: AppBarTheme(color: Colors.white)),
+      theme: ThemeData.light().copyWith(
+        // primaryColor: Colors.white,
+      ),
       debugShowCheckedModeBanner: false,
     );
   }
