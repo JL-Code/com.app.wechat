@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import './pages/index_page.dart';
+import './constants.dart' show AppColors;
 
 void main() => runApp(MyApp());
 
@@ -9,7 +10,9 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       home: IndexPage(),
       theme: ThemeData.light().copyWith(
-        // primaryColor: Colors.white,
+        primaryColor: Color(AppColors.PrimaryColor),
+        cardColor: const Color(AppColors.CardBgColor),
+        backgroundColor: Color(AppColors.BackgroundColor),
       ),
       debugShowCheckedModeBanner: false,
     );

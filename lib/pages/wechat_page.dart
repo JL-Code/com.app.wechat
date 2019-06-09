@@ -1,4 +1,5 @@
 import 'package:com_app_wechat/models/conversation.dart';
+import 'package:com_app_wechat/constants.dart' show Constants;
 import 'package:flutter/material.dart';
 
 class WeChatPage extends StatelessWidget {
@@ -9,11 +10,10 @@ class WeChatPage extends StatelessWidget {
       padding: EdgeInsets.all(16.0),
       itemCount: mockConversationData.length,
       itemBuilder: (BuildContext context, int index) {
-        // 在每一列之前，添加一个1像素高的分隔线widget
         return _buildListTile(mockConversationData[index]);
       },
       separatorBuilder: (context, index) {
-        return Divider();
+        return Divider(height: 1.0);
       },
     );
   }
@@ -41,15 +41,15 @@ class WeChatPage extends StatelessWidget {
     if (item.isAvatarFromNet()) {
       _avatar = Image.network(
         item.avatar,
-        height: 40,
-        width: 40,
+        height: Constants.ContactAvatarSize,
+        width: Constants.ContactAvatarSize,
         fit: BoxFit.fill,
       );
     } else {
       _avatar = Image.asset(
         item.avatar,
-        height: 40,
-        width: 40,
+        height: Constants.ContactAvatarSize,
+        width: Constants.ContactAvatarSize,
         fit: BoxFit.fill,
       );
     }
@@ -75,14 +75,13 @@ class WeChatPage extends StatelessWidget {
 
     return ListTile(
       title: Text(item.title),
-
-      /// 头像
       leading: avatarContainer,
       subtitle: Text(
         item.desc,
-        style: TextStyle(fontSize: 12.0),
+        style: TextStyle(
+          fontSize: 12.0,
+        ),
       ),
-      isThreeLine: false,
       trailing: Column(
         children: <Widget>[
           Text(
@@ -103,13 +102,6 @@ class WeChatPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
-      appBar: new AppBar(
-        title: new Text("微信"),
-        actions: <Widget>[
-          new Icon(Icons.search),
-          new Icon(Icons.add_circle_outline)
-        ],
-      ),
       body: _buildListView(),
     );
   }
