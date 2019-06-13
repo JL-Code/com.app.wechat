@@ -1,6 +1,14 @@
 # com_app_wechat
 
-A new Flutter project.
+一个模仿微信的Flutter学习项目
+
+## TODO
+
+- [ ] 聊天页面
+- [ ] widget 动态显示隐藏
+- [ ] 联系人页面
+- [ ] 发现页面
+- [ ] 我的页面
 
 ## Getting Started
 

@@ -3,7 +3,7 @@ import 'package:com_app_wechat/models/conversation.dart';
 import 'package:com_app_wechat/constants.dart' show Constants;
 import 'package:flutter/material.dart';
 
-class WeChatPage extends StatelessWidget {
+class ChatPage extends StatelessWidget {
   static const String routeName = "/WeChat";
 
   Widget _buildListView() {
@@ -55,26 +55,30 @@ class WeChatPage extends StatelessWidget {
   /// 构建列表项
   ListTile _buildListTile(Conversation item) {
     /// 徽章
+    //TODO: 勿扰图标和徽章 按需显示
     Widget badge = Container(
       padding: EdgeInsets.only(left: 3, right: 3),
       alignment: Alignment.center,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(15),
-        color: Colors.red,
+        color: Colors.redAccent,
       ),
       child: Text(
         item.unreadMsgCount.toString(),
         style: TextStyle(
           fontSize: 12,
           color: Colors.white,
+          fontWeight: FontWeight.bold,
         ),
       ),
     );
 
     Widget _avatar;
     if (item.isAvatarFromNet()) {
-      _avatar = Image.network(
-        item.avatar,
+      // 使用 FadeInImage 来占位待网络图片加载好了替换。
+      _avatar = FadeInImage.assetNetwork(
+        placeholder: "assets/images/default_nor_avatar.png",
+        image: item.avatar,
         height: Constants.ContactAvatarSize,
         width: Constants.ContactAvatarSize,
         fit: BoxFit.fill,
@@ -110,8 +114,10 @@ class WeChatPage extends StatelessWidget {
     return ListTile(
       title: Text(item.title),
       leading: avatarContainer,
+      isThreeLine: false,
       subtitle: Text(
         item.desc,
+        overflow: TextOverflow.ellipsis,
         style: TextStyle(
           fontSize: 12.0,
         ),
@@ -120,14 +126,10 @@ class WeChatPage extends StatelessWidget {
         children: <Widget>[
           Text(
             item.updateAt,
-            style: TextStyle(color: Colors.grey),
+            style: TextStyle(color: Colors.grey, fontSize: 12),
           ),
           SizedBox(height: 10),
-          Icon(
-            Icons.notifications_off,
-            size: 18.0,
-            color: Colors.grey,
-          ),
+          Icon(Icons.notifications_off, size: 14.0, color: Colors.grey),
         ],
       ),
     );

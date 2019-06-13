@@ -3,7 +3,7 @@ import 'package:flutter/rendering.dart';
 import './user_page.dart';
 import './discoverer_page.dart';
 import './contacts_page.dart';
-import './wechat_page.dart';
+import './chat_page.dart';
 import '../constants.dart';
 import '../i18n/strings.dart' show Strings;
 
@@ -69,7 +69,7 @@ class _IndexPageState extends State<IndexPage> {
     /// 初始页面相关
     _pageController = PageController(initialPage: _currentIndex);
     _pages = [
-      WeChatPage(),
+      ChatPage(),
       ContactsPage(),
       DiscovererPage(),
       UserPage(),
