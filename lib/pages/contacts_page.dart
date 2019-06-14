@@ -1,6 +1,6 @@
-import 'package:com_app_wechat/models/contact_viewmodel.dart';
 import 'package:flutter/material.dart';
-import '../models/contact_viewmodel.dart' show ContactViewModel;
+import '../models/contact_viewmodel.dart'
+    show ContactViewModel, ContactItemGroup, ContactItem;
 import 'package:com_app_wechat/constants.dart' show Constants, AppColors;
 
 const INDEX_BAR_WORDS = [
@@ -36,6 +36,7 @@ const INDEX_BAR_WORDS = [
 
 class ContactsPage extends StatefulWidget {
   static const String routeName = "/contacts";
+
   ContactsPage({Key key}) : super(key: key);
 
   _ContactsPageState createState() => _ContactsPageState();
@@ -46,6 +47,7 @@ class _ContactsPageState extends State<ContactsPage> {
   String _currentLetter = '';
   List<ContactItemGroup> _contacts;
   ScrollController _scrollController;
+
   final Map _letterPosMap = {INDEX_BAR_WORDS[0]: 0.0};
 
   @override
@@ -54,6 +56,10 @@ class _ContactsPageState extends State<ContactsPage> {
     _contacts = ContactViewModel.build();
     _scrollController = new ScrollController();
     // 计算用于 IndexBar 进行定位的关键通讯录列表项的位置
+    // 监听滚动事件
+    _scrollController.addListener(() {
+      // print("offset: $_scrollController.offset");
+    });
   }
 
   @override
@@ -88,10 +94,16 @@ class _ContactsPageState extends State<ContactsPage> {
     );
   }
 
-  _buildListView(List<ContactItemGroup> contactGroup) {
+  Widget _buildListView(List<ContactItemGroup> contactGroup) {
     var children = <Widget>[];
+    var _pos = 0.0;
     for (var group in contactGroup) {
+      /// 显示分组标题
       if (group.visible) {
+        _pos += ContactItemGroup.height();
+        _letterPosMap[group.groupName] = _pos;
+        // print(group.groupName);
+        // print('group: $_pos');
         children.add(Row(
           children: <Widget>[
             Expanded(
@@ -118,6 +130,7 @@ class _ContactsPageState extends State<ContactsPage> {
         ));
       }
       for (var item in group.items) {
+        _pos += ContactItem.height();
         children.add(Row(
           children: <Widget>[
             Container(
@@ -142,15 +155,23 @@ class _ContactsPageState extends State<ContactsPage> {
         ));
       }
     }
-    return ListView(
-      children: children,
+    return ListView.builder(
+      itemBuilder: (BuildContext context, int index) {
+        return children[index];
+      },
+      itemCount: children.length,
+      controller: _scrollController,
     );
   }
 
+  /// 得到选中的字母
   String _getLetter(BuildContext context, double tileHeight, Offset globalPos) {
     RenderBox _box = context.findRenderObject();
     var local = _box.globalToLocal(globalPos);
+    print("_getLetter");
+    print(local.dy);
     int index = (local.dy ~/ tileHeight).clamp(0, INDEX_BAR_WORDS.length - 1);
+    print(INDEX_BAR_WORDS[index]);
     return INDEX_BAR_WORDS[index];
   }
 
@@ -167,12 +188,6 @@ class _ContactsPageState extends State<ContactsPage> {
   /// 生成索引栏
   Widget _buildIndexBar(BuildContext context, BoxConstraints constraints) {
     final List<Widget> _letters = INDEX_BAR_WORDS.map((String word) {
-      // return Expanded(
-      //   child: Text(
-      //     word,
-      //     style: TextStyle(fontSize: 11),
-      //   ),
-      // );
       return Container(
         padding: EdgeInsets.symmetric(vertical: 1),
         child: Text(
@@ -184,7 +199,11 @@ class _ContactsPageState extends State<ContactsPage> {
 
     final double _totalHeight = constraints.biggest.height;
     final double _tileHeight = _totalHeight / _letters.length;
+
+    /// GestureDetector 手势识别器
+    /// see:https://api.flutter.dev/flutter/widgets/GestureDetector-class.html
     return GestureDetector(
+      /// 指针已接触屏幕，可能会开始垂直移动。
       onVerticalDragDown: (DragDownDetails details) {
         setState(() {
           this._indexBarBg = Colors.black26;
@@ -193,18 +212,24 @@ class _ContactsPageState extends State<ContactsPage> {
           _jumpToIndex(this._currentLetter);
         });
       },
+
+      /// 先前与屏幕接触并垂直移动的指针不再与屏幕接触，并且在停止接触屏幕时以特定速度移动
       onVerticalDragEnd: (DragEndDetails details) {
         setState(() {
           this._indexBarBg = Colors.transparent;
           this._currentLetter = null;
         });
       },
+
+      /// 先前触发onVerticalDragDown的指针未完成。
       onVerticalDragCancel: () {
         setState(() {
           this._indexBarBg = Colors.transparent;
           this._currentLetter = null;
         });
       },
+
+      /// 指针与屏幕接触并已沿垂直方向移动
       onVerticalDragUpdate: (DragUpdateDetails details) {
         setState(() {
           this._indexBarBg = Colors.black26;

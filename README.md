@@ -10,6 +10,10 @@
 - [ ] 发现页面
 - [ ] 我的页面
 
+## 联系人索引列表需求
+indexBar 混动时被手指按压的字符要突出显示（背景色标绿）、并且需要弹出气泡提示、同时
+ContactView的顶部固定显示当前突出显示的字符索引的内容。
+
 ## Getting Started
 
 This project is a starting point for a Flutter application.

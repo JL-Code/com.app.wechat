@@ -5,6 +5,7 @@
  * @Version: 
  */
 import 'package:flutter/material.dart';
+import '../constants.dart' show Constants;
 
 class ContactViewModel {
   // var contactMap = new Map<String, List<ContactItem>>();
@@ -33,72 +34,24 @@ class ContactViewModel {
       ),
     ]));
 
-    // 我的企业
-    data.add(const ContactItemGroup(
-      groupName: "enterprise",
-      items: [],
-      visible: false,
-    ));
-
-    // 联系人
-    data.add(const ContactItemGroup(
-      groupName: "contacts",
-      items: [
-        const ContactItem(
-          avatar: 'assets/images/ic_file_transfer.png',
-          title: '文件传输助手',
-        ),
-        const ContactItem(
-          avatar: 'assets/images/ic_tx_news.png',
-          title: '腾讯新闻',
-        ),
-        const ContactItem(
-          avatar: 'assets/images/ic_wx_games.png',
-          title: '微信游戏',
-        ),
-        const ContactItem(
-          avatar: 'https://randomuser.me/api/portraits/men/10.jpg',
-          title: '汤姆丁',
-        ),
-        const ContactItem(
-          avatar: 'https://randomuser.me/api/portraits/women/10.jpg',
-          title: 'Tina Morgan',
-        ),
-        const ContactItem(
-          avatar: 'assets/images/ic_fengchao.png',
-          title: '蜂巢智能柜',
-        ),
-        const ContactItem(
-          avatar: 'https://randomuser.me/api/portraits/women/57.jpg',
-          title: 'Lily',
-        ),
-        const ContactItem(
-          avatar: 'https://randomuser.me/api/portraits/men/10.jpg',
-          title: '汤姆丁',
-        ),
-        const ContactItem(
-          avatar: 'https://randomuser.me/api/portraits/women/10.jpg',
-          title: 'Tina Morgan',
-        ),
-        const ContactItem(
-          avatar: 'https://randomuser.me/api/portraits/women/57.jpg',
-          title: 'Lily',
-        ),
-        const ContactItem(
-          avatar: 'https://randomuser.me/api/portraits/men/10.jpg',
-          title: '汤姆丁',
-        ),
-        const ContactItem(
-          avatar: 'https://randomuser.me/api/portraits/women/10.jpg',
-          title: 'Tina Morgan',
-        ),
-        const ContactItem(
-          avatar: 'https://randomuser.me/api/portraits/women/57.jpg',
-          title: 'Lily',
-        )
-      ],
-    ));
-
+    final letters = ["A", "B", "C", "D", "E", "T", "W"];
+    for (var i = 0; i < letters.length; i++) {
+      var _letter = letters[i];
+      var _items = <ContactItem>[];
+      var _group = ContactItemGroup(
+        groupName: _letter,
+        items: _items,
+      );
+      for (var i = 0; i < 10; i++) {
+        int _index = 70 + i;
+        _items.add(ContactItem(
+          avatar: 'https://randomuser.me/api/portraits/women/$_index.jpg',
+          title: '汤姆丁_$_letter',
+          nameIndex: _letter,
+        ));
+      }
+      data.add(_group);
+    }
     return data;
   }
 }
@@ -109,21 +62,34 @@ class ContactItemGroup {
     @required this.items,
     this.visible: true,
   });
+
   final String groupName;
   final List<ContactItem> items;
   final bool visible;
+
+  /// 返回ContactItemGroup 高度
+  static double height() {
+    return Constants.DividerWidth + 34.0;
+  }
 }
 
 class ContactItem {
   const ContactItem({
     @required this.title,
     @required this.avatar,
+    this.nameIndex: "",
   });
 
   final String title;
   final String avatar;
+  final String nameIndex;
+
   bool get isAvatarFromNet {
     return AvatarUtil.isAvatarFromNet(this.avatar);
+  }
+
+  static double height() {
+    return Constants.ContactAvatarSize + Constants.DividerWidth + 16.0;
   }
 }
 
