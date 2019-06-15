@@ -92,6 +92,9 @@ class Constants {
   static const ConversationMuteIconSize = 18.0;
   static const ContactAvatarSize = 42.0;
   static const TitleTextSize = 16.0;
+  static const ContactItemGroupHeight = 32.0;
+  static const ContactItemPadding = 16.0;
+  static const ContactItemGroupPadding = 16.0;
   static const DesTextSize = 13.0;
   static const IndexBarWidth = 24.0;
   static const IndexLetterBoxSize = 114.0;

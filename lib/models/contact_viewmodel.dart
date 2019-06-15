@@ -13,26 +13,29 @@ class ContactViewModel {
   static final data = new List<ContactItemGroup>();
 
   static List<ContactItemGroup> build() {
+    // 清空数据
+    data.clear();
     // action
     data.add(
-        const ContactItemGroup(groupName: "actions", visible: false, items: [
-      const ContactItem(
-        title: "新的朋友",
-        avatar: "assets/images/ic_new_friend.png",
-      ),
-      const ContactItem(
-        title: "群聊",
-        avatar: "assets/images/ic_group_chat.png",
-      ),
-      const ContactItem(
-        title: "标签",
-        avatar: "assets/images/ic_tag.png",
-      ),
-      const ContactItem(
-        title: "公众号",
-        avatar: "assets/images/ic_public_account.png",
-      ),
-    ]));
+      const ContactItemGroup(groupName: "actions", visible: false, items: [
+        const ContactItem(
+          title: "新的朋友",
+          avatar: "assets/images/ic_new_friend.png",
+        ),
+        const ContactItem(
+          title: "群聊",
+          avatar: "assets/images/ic_group_chat.png",
+        ),
+        const ContactItem(
+          title: "标签",
+          avatar: "assets/images/ic_tag.png",
+        ),
+        const ContactItem(
+          title: "公众号",
+          avatar: "assets/images/ic_public_account.png",
+        ),
+      ]),
+    );
 
     final letters = ["A", "B", "C", "D", "E", "T", "W"];
     for (var i = 0; i < letters.length; i++) {
@@ -42,7 +45,7 @@ class ContactViewModel {
         groupName: _letter,
         items: _items,
       );
-      for (var i = 0; i < 10; i++) {
+      for (var i = 0; i < 3; i++) {
         int _index = 70 + i;
         _items.add(ContactItem(
           avatar: 'https://randomuser.me/api/portraits/women/$_index.jpg',
@@ -69,7 +72,7 @@ class ContactItemGroup {
 
   /// 返回ContactItemGroup 高度
   static double height() {
-    return Constants.DividerWidth + 34.0;
+    return Constants.ContactItemGroupHeight;
   }
 }
 
@@ -89,7 +92,7 @@ class ContactItem {
   }
 
   static double height() {
-    return Constants.ContactAvatarSize + Constants.DividerWidth + 16.0;
+    return Constants.ContactAvatarSize + Constants.ContactItemPadding;
   }
 }
 

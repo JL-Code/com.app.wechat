@@ -44,16 +44,89 @@ class ContactsPage extends StatefulWidget {
 
 class _ContactsPageState extends State<ContactsPage> {
   Color _indexBarBg = Colors.transparent;
-  String _currentLetter = '';
+  String _currentLetter = "";
   List<ContactItemGroup> _contacts;
   ScrollController _scrollController;
-
+  final List<Widget> _children = [];
   final Map _letterPosMap = {INDEX_BAR_WORDS[0]: 0.0};
+  final Map _letterKeys = new Map<String, GlobalKey>();
 
   @override
   void initState() {
     super.initState();
-    _contacts = ContactViewModel.build();
+    var data = ContactViewModel.build();
+    _contacts = data;
+    print("initState");
+
+    /// TODO: 数据与视图需分开
+    var _pos = 0.0;
+    for (var group in _contacts) {
+      /// 显示分组标题
+      if (group.visible) {
+        _letterPosMap[group.groupName] = _pos;
+        _letterKeys[group.groupName] = GlobalKey(debugLabel: group.groupName);
+        _pos += ContactItemGroup.height();
+        _children.add(Row(
+          key: _letterKeys[group.groupName],
+          children: <Widget>[
+            Expanded(
+              child: Container(
+                decoration: BoxDecoration(
+                  color: const Color(AppColors.ContactGroupTitleBg),
+                  border: Border(
+                    bottom: BorderSide(
+                      width: Constants.DividerWidth,
+                      color: const Color(AppColors.DividerColor),
+                    ),
+                  ),
+                ),
+                height: Constants.ContactItemGroupHeight,
+                padding: EdgeInsets.symmetric(
+                    horizontal: Constants.ContactItemGroupPadding, vertical: 8),
+                child: Text(
+                  group.groupName,
+                  style: TextStyle(
+                    color: const Color(AppColors.ContactGroupTitleText),
+                  ),
+                ),
+              ),
+            )
+          ],
+        ));
+      }
+      for (var item in group.items) {
+        _pos += ContactItem.height();
+        _children.add(Row(
+          children: <Widget>[
+            Container(
+              padding: EdgeInsets.only(
+                left: Constants.ContactItemPadding,
+                right: Constants.ContactItemPadding,
+                top: 8,
+                bottom: 8,
+              ),
+              child: _buildAvatar(item),
+            ),
+            Expanded(
+              child: Container(
+                padding: EdgeInsets.symmetric(
+                    horizontal: 16.0, vertical: Constants.ContactItemPadding),
+                decoration: BoxDecoration(
+                  border: Border(
+                    bottom: BorderSide(
+                      width: Constants.DividerWidth,
+                      color: const Color(AppColors.DividerColor),
+                    ),
+                  ),
+                ),
+                child: Text(item.title),
+              ),
+            )
+          ],
+        ));
+      }
+    }
+    print("map:$_letterPosMap");
     _scrollController = new ScrollController();
     // 计算用于 IndexBar 进行定位的关键通讯录列表项的位置
     // 监听滚动事件
@@ -73,12 +146,17 @@ class _ContactsPageState extends State<ContactsPage> {
     Widget _avatar;
     if (item.isAvatarFromNet) {
       // 使用 FadeInImage 来占位待网络图片加载好了替换。
-      _avatar = FadeInImage.assetNetwork(
-        placeholder: "assets/images/default_nor_avatar.png",
-        image: item.avatar,
-        height: Constants.ContactAvatarSize,
-        width: Constants.ContactAvatarSize,
-        fit: BoxFit.fill,
+      Center(
+        child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: _avatar = FadeInImage.assetNetwork(
+            placeholder: "assets/images/default_nor_avatar.png",
+            image: item.avatar,
+            height: Constants.ContactAvatarSize,
+            width: Constants.ContactAvatarSize,
+            fit: BoxFit.fill,
+          ),
+        ),
       );
     } else {
       _avatar = Image.asset(
@@ -94,90 +172,50 @@ class _ContactsPageState extends State<ContactsPage> {
     );
   }
 
-  Widget _buildListView(List<ContactItemGroup> contactGroup) {
-    var children = <Widget>[];
-    var _pos = 0.0;
-    for (var group in contactGroup) {
-      /// 显示分组标题
-      if (group.visible) {
-        _pos += ContactItemGroup.height();
-        _letterPosMap[group.groupName] = _pos;
-        // print(group.groupName);
-        // print('group: $_pos');
-        children.add(Row(
-          children: <Widget>[
-            Expanded(
-              child: Container(
-                decoration: BoxDecoration(
-                  color: const Color(AppColors.ContactGroupTitleBg),
-                  border: Border(
-                    bottom: BorderSide(
-                      width: Constants.DividerWidth,
-                      color: const Color(AppColors.DividerColor),
-                    ),
-                  ),
-                ),
-                padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 8),
-                child: Text(
-                  group.groupName,
-                  style: TextStyle(
-                    color: const Color(AppColors.ContactGroupTitleText),
-                  ),
-                ),
-              ),
-            )
-          ],
-        ));
-      }
-      for (var item in group.items) {
-        _pos += ContactItem.height();
-        children.add(Row(
-          children: <Widget>[
-            Container(
-              padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 0),
-              child: _buildAvatar(item),
-            ),
-            Expanded(
-              child: Container(
-                padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 18),
-                decoration: BoxDecoration(
-                  border: Border(
-                    bottom: BorderSide(
-                      width: Constants.DividerWidth,
-                      color: const Color(AppColors.DividerColor),
-                    ),
-                  ),
-                ),
-                child: Text(item.title),
-              ),
-            )
-          ],
-        ));
-      }
-    }
-    return ListView.builder(
-      itemBuilder: (BuildContext context, int index) {
-        return children[index];
-      },
-      itemCount: children.length,
-      controller: _scrollController,
-    );
-  }
-
   /// 得到选中的字母
   String _getLetter(BuildContext context, double tileHeight, Offset globalPos) {
     RenderBox _box = context.findRenderObject();
+    // 全局坐标转Widget内的坐标
     var local = _box.globalToLocal(globalPos);
-    print("_getLetter");
-    print(local.dy);
-    int index = (local.dy ~/ tileHeight).clamp(0, INDEX_BAR_WORDS.length - 1);
-    print(INDEX_BAR_WORDS[index]);
-    return INDEX_BAR_WORDS[index];
+    print("_getLetter $local");
+    var _word = "";
+    // ~/ 除法但结果取整（不进行四舍五入计算，直接舍去小数位）
+    int index = (local.dy ~/ tileHeight);
+    if (index > 0 && index < INDEX_BAR_WORDS.length - 1) {
+      _word = INDEX_BAR_WORDS[index];
+    }
+    return _word;
+  }
+
+  void _getSize(GlobalKey key) {
+    /// https://api.flutter.dev/flutter/widgets/GlobalKey/currentContext.html
+    /// currentContext:构建具有此密钥的窗口小部件的构建上下文。 如果树中没有与此全局键匹配的窗口小部件，则当前上下文为null。
+    final RenderBox renderBox = key.currentContext.findRenderObject();
+    final size = renderBox.size;
+    print("SIZE of Box: $size");
+  }
+
+  Offset _getPosition(GlobalKey key) {
+    final RenderBox renderBox = key.currentContext.findRenderObject();
+
+    /// 局部坐标转全局坐标
+    final Offset pos = renderBox.localToGlobal(Offset.zero);
+    print("Position of Box: $pos");
+    return pos;
   }
 
   void _jumpToIndex(String letter) {
     if (_letterPosMap.isNotEmpty) {
+      print("letter : $letter");
       final _pos = _letterPosMap[letter];
+//      GlobalKey key = _letterKeys[letter];
+//      if (key != null) {
+//        _getSize(key);
+//        final Offset offset = _getPosition(key);
+//        print("target: $_pos");
+//        print("tareget computed offset: $offset");
+//        print("tareget computed offset - appbarHeight: ${offset.dy - 72.4}");
+//      }
       if (_pos != null) {
         _scrollController.animateTo(_pos,
             curve: Curves.easeOut, duration: Duration(milliseconds: 200));
@@ -188,23 +226,32 @@ class _ContactsPageState extends State<ContactsPage> {
   /// 生成索引栏
   Widget _buildIndexBar(BuildContext context, BoxConstraints constraints) {
     final List<Widget> _letters = INDEX_BAR_WORDS.map((String word) {
-      return Container(
-        padding: EdgeInsets.symmetric(vertical: 1),
+//      return Container(
+//        padding: EdgeInsets.symmetric(vertical: 1),
+//        child: Text(
+//          word,
+//          style: TextStyle(fontSize: 12),
+//        ),
+//      );
+      return Expanded(
         child: Text(
           word,
-          style: TextStyle(fontSize: 11),
+          style: TextStyle(fontSize: 12),
         ),
       );
     }).toList();
 
     final double _totalHeight = constraints.biggest.height;
     final double _tileHeight = _totalHeight / _letters.length;
+    print("_totalHeight:$_totalHeight");
 
     /// GestureDetector 手势识别器
     /// see:https://api.flutter.dev/flutter/widgets/GestureDetector-class.html
     return GestureDetector(
       /// 指针已接触屏幕，可能会开始垂直移动。
       onVerticalDragDown: (DragDownDetails details) {
+        print("onVerticalDragDown");
+//        print("指针与屏幕接触的全局位置: ${details.globalPosition}");
         setState(() {
           this._indexBarBg = Colors.black26;
           this._currentLetter =
@@ -215,22 +262,27 @@ class _ContactsPageState extends State<ContactsPage> {
 
       /// 先前与屏幕接触并垂直移动的指针不再与屏幕接触，并且在停止接触屏幕时以特定速度移动
       onVerticalDragEnd: (DragEndDetails details) {
+        print("onVerticalDragEnd");
+
         setState(() {
           this._indexBarBg = Colors.transparent;
-          this._currentLetter = null;
+          this._currentLetter = "";
         });
       },
 
       /// 先前触发onVerticalDragDown的指针未完成。
       onVerticalDragCancel: () {
+        print("onVerticalDragCancel");
         setState(() {
           this._indexBarBg = Colors.transparent;
-          this._currentLetter = null;
+          this._currentLetter = "";
         });
       },
 
       /// 指针与屏幕接触并已沿垂直方向移动
       onVerticalDragUpdate: (DragUpdateDetails details) {
+        print("onVerticalDragUpdate");
+//        print(details.globalPosition);
         setState(() {
           this._indexBarBg = Colors.black26;
           this._currentLetter =
@@ -249,7 +301,13 @@ class _ContactsPageState extends State<ContactsPage> {
   @override
   Widget build(BuildContext context) {
     final List<Widget> _body = [
-      _buildListView(_contacts),
+      ListView.builder(
+        itemBuilder: (BuildContext context, int index) {
+          return _children[index];
+        },
+        itemCount: _children.length,
+        controller: _scrollController,
+      ),
       Positioned(
         width: Constants.IndexBarWidth,
         right: 0.0,
@@ -263,6 +321,25 @@ class _ContactsPageState extends State<ContactsPage> {
         ),
       )
     ];
+    // 动态添加提示
+    if (this._currentLetter.isNotEmpty) {
+      _body.add(
+        Center(
+          child: Container(
+            padding: EdgeInsets.symmetric(horizontal: 40, vertical: 30),
+            color: Colors.black26,
+            child: Text(
+              this._currentLetter,
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 36.0,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+          ),
+        ),
+      );
+    }
     return Stack(
       children: _body,
     );
