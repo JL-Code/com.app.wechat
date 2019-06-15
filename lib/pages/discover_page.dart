@@ -13,7 +13,7 @@ class DiscoverPage extends StatelessWidget {
       child: Column(
         children: <Widget>[
           Cell(
-            avatarPath: "assets/images/ic_social_circle.png",
+            iconPath: "assets/images/ic_social_circle.png",
             title: "朋友圈",
             onPressed: () {
               print("点击了");
@@ -21,7 +21,7 @@ class DiscoverPage extends StatelessWidget {
           ),
           SizedBox(height: SEPARATE_SIZE),
           Cell(
-            avatarPath: "assets/images/ic_quick_scan.png",
+            iconPath: "assets/images/ic_quick_scan.png",
             title: "扫一扫",
             onPressed: () {
               print("点击了");
@@ -29,7 +29,7 @@ class DiscoverPage extends StatelessWidget {
           ),
           SizedBox(height: SEPARATE_SIZE),
           Cell(
-            avatarPath: "assets/images/ic_quick_search.png",
+            iconPath: "assets/images/ic_quick_search.png",
             title: "搜一搜",
             onPressed: () {
               print("点击了");
@@ -37,7 +37,7 @@ class DiscoverPage extends StatelessWidget {
           ),
           SizedBox(height: SEPARATE_SIZE),
           Cell(
-            avatarPath: "assets/images/ic_mini_program.png",
+            iconPath: "assets/images/ic_mini_program.png",
             title: "小程序",
             onPressed: () {
               print("点击了");

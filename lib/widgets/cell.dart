@@ -6,7 +6,7 @@ import 'package:com_app_wechat/widget_helper/avatar_helper.dart';
 class Cell extends StatelessWidget {
   const Cell({
     @required this.title,
-    this.desc: "",
+    this.desc,
     @required this.iconPath,
     @required this.onPressed,
     this.showArrow: true,
@@ -35,6 +35,7 @@ class Cell extends StatelessWidget {
 
   /// 构建单元
   Widget _buildCore(String avatar, String title, String desc) {
+    final _bodyWidgets = <Widget>[];
     final Border _divider = showDivider
         ? Border(
             bottom: BorderSide(
@@ -42,35 +43,31 @@ class Cell extends StatelessWidget {
                 width: Constants.DividerWidth),
           )
         : null;
-    final _children = <Widget>[
-      /// 头像
-      Container(
-        padding: EdgeInsets.only(right: CellPadding),
-        child: AvatarHelper.buildAvatar(avatar, CellAvatarSize, CellAvatarSize),
-      ),
 
-      /// 标题
-      Expanded(
-        child: Text(title),
-      ),
-
-      /// 说明文字
-      Container(),
-
-      /// 箭头
-      Container(),
-    ];
-
-    if (desc.isNotEmpty) {
-      final descWidget = Text(
-        desc,
-        style: TextStyle(color: Colors.grey),
-      );
-      _children[2] = descWidget;
+    if (this.valueWidget != null) {
+      _bodyWidgets
+        ..add(Text(title, style: AppStyles.TitleStyle))
+        ..add(Expanded(
+          child: valueWidget,
+        ));
+    } else if (this.desc != null) {
+      _bodyWidgets
+        ..add(Text(title, style: AppStyles.TitleStyle))
+        ..add(Expanded(
+          child: Container(
+            alignment: Alignment.centerRight,
+            child: Cell.descText(this.desc),
+          ),
+        ));
+    } else {
+      _bodyWidgets.add(Expanded(
+        child: Text(title, style: AppStyles.TitleStyle),
+      ));
     }
 
+    /// 右箭头
     if (this.showArrow) {
-      _children[3] = buildArrow();
+      _bodyWidgets.add(_buildArrow());
     }
 
     final Widget _cell = Container(
@@ -78,7 +75,21 @@ class Cell extends StatelessWidget {
       decoration: BoxDecoration(
         border: _divider,
       ),
-      child: Row(children: _children),
+      child: Row(children: [
+        /// left
+        Container(
+          padding: EdgeInsets.only(right: CellPadding),
+          child:
+              AvatarHelper.buildAvatar(avatar, CellAvatarSize, CellAvatarSize),
+        ),
+
+        /// right
+        Expanded(
+          child: Row(
+            children: _bodyWidgets,
+          ),
+        )
+      ]),
     );
     return _cell;
   }
@@ -94,7 +105,7 @@ class Cell extends StatelessWidget {
   }
 
   /// 构建箭头
-  Widget buildArrow() {
+  Widget _buildArrow() {
     return Icon(
       Icons.keyboard_arrow_right,
       color: const Color(AppColors.ButtonArrowColor),
