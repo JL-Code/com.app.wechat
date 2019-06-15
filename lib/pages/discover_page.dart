@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 
-class DiscovererPage extends StatelessWidget {
-  static const String routeName = "/discoverer";
+class DiscoverPage extends StatelessWidget {
+  static const String routeName = "/discover";
 
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
-      body: Text("Discoverer"),
+      body: Text("discover"),
     );
   }
 }
