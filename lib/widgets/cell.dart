@@ -97,7 +97,7 @@ class Cell extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return FlatButton(
-      padding: EdgeInsets.only(left: 0),
+      padding: EdgeInsets.only(left: 15),
       color: Colors.white,
       child: _buildCore(this.iconPath, this.title, this.desc),
       onPressed: this.onPressed,
@@ -116,6 +116,21 @@ class Cell extends StatelessWidget {
   /// * [desc] 显示在文本上的信息
   static Text descText(final desc) {
     return Text(desc, style: AppStyles.ButtonDesTextStyle);
+  }
+
+  /// 按钮上的圆角文本标签控件
+  /// * [content] 标签上的显示文本
+  static Widget tag(final content) {
+    return Container(
+      height: 18.0,
+      alignment: Alignment.center,
+      margin: const EdgeInsets.only(left: 6.0),
+      padding: const EdgeInsets.only(left: 8.0, right: 8.0),
+      decoration: BoxDecoration(
+          color: const Color(AppColors.NewTagBg),
+          borderRadius: BorderRadius.circular(10.0)),
+      child: Text(content, style: AppStyles.NewTagTextStyle),
+    );
   }
 
   /// 按钮上的图片标签，可以根据 [path] 的内容自动生成assets或者网络上的图片

@@ -10,7 +10,7 @@ class AppColors {
   static const TabIconNormal = 0xff999999;
   static const TabIconActive = 0xff46c11b;
   static const AppBarPopupMenuColor = 0xffffffff;
-  static const TitleColor = 0xff181818;
+  static const TitleColor = 0xff333333;
   static const ConversationItemBg = 0xffffffff;
   static const DesTextColor = 0xff999999;
   static const DividerColor = 0xffd5d5d5;
@@ -36,6 +36,7 @@ class AppStyles {
   static const TitleStyle = TextStyle(
     fontSize: Constants.TitleTextSize,
     color: const Color(AppColors.TitleColor),
+    fontWeight: FontWeight.normal,
   );
 
   static const DesStyle = TextStyle(
@@ -59,7 +60,7 @@ class AppStyles {
   );
 
   static const IndexLetterBoxTextStyle =
-  TextStyle(fontSize: 64.0, color: Colors.white);
+      TextStyle(fontSize: 64.0, color: Colors.white);
 
   static const HeaderCardTitleTextStyle = TextStyle(
       fontSize: 20.0,
@@ -79,7 +80,7 @@ class AppStyles {
   static const NewTagTextStyle = TextStyle(
       fontSize: Constants.DesTextSize,
       color: Colors.white,
-      fontWeight: FontWeight.bold);
+      fontWeight: FontWeight.w600);
 }
 
 class Constants {
@@ -95,7 +96,7 @@ class Constants {
   static const ContactItemGroupHeight = 32.0;
   static const ContactItemPadding = 16.0;
   static const ContactItemGroupPadding = 16.0;
-  static const DesTextSize = 13.0;
+  static const DesTextSize = 12.0;
   static const IndexBarWidth = 24.0;
   static const IndexLetterBoxSize = 114.0;
   static const IndexLetterBoxRadius = 4.0;
@@ -113,4 +114,3 @@ class Constants {
   static const String MENU_UNSUBSCRIBE = 'MENU_UNSUBSCRIBE';
   static const String MENU_UNSUBSCRIBE_VALUE = '取消关注';
 }
-
