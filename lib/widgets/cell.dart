@@ -69,7 +69,7 @@ class Cell extends StatelessWidget {
 
     /// 右箭头
     if (this.showArrow) {
-      _bodyWidgets.add(_buildArrow());
+      _bodyWidgets.add(Cell.buildRightArrow());
     }
 
     final Widget _cell = Container(
@@ -110,8 +110,8 @@ class Cell extends StatelessWidget {
     );
   }
 
-  /// 构建箭头
-  Widget _buildArrow() {
+  /// 按钮右边的指示箭头
+  static Widget buildRightArrow() {
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: 5),
       child: Icon(

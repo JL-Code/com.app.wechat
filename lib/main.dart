@@ -14,7 +14,9 @@ class MyApp extends StatelessWidget {
         cardColor: const Color(AppColors.CardBgColor),
         backgroundColor: Color(AppColors.BackgroundColor),
       ),
-      debugShowCheckedModeBanner: false,
+
+      /// 显示debug标志
+      debugShowCheckedModeBanner: true,
     );
   }
 }

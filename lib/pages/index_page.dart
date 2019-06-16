@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import './user_page.dart';
+import './me_page.dart';
 import './discover_page.dart';
 import './contacts_page.dart';
 import './chat_page.dart';
@@ -21,6 +21,7 @@ class _IndexPageState extends State<IndexPage> {
   String title = "微信";
   Color headerColor;
   List<Widget> _mainActions;
+  List<Widget> _functionActions;
   int _currentIndex = 0;
   List<Widget> _pages;
   PageController _pageController;
@@ -93,7 +94,7 @@ class _IndexPageState extends State<IndexPage> {
       ChatPage(),
       ContactsPage(),
       DiscoverPage(),
-      UserPage(),
+      MePage(),
     ];
 
     _mainActions = [
@@ -150,6 +151,21 @@ class _IndexPageState extends State<IndexPage> {
         ),
       ),
     ];
+    _functionActions = [
+      IconButton(
+        icon: Icon(
+            IconData(
+              0xe60a,
+              fontFamily: Constants.WeChatIconFontFamily,
+            ),
+            size: Constants.ActionIconSize + 4.0,
+            color: const Color(AppColors.ActionIconColor)),
+        onPressed: () {
+          print('打开相机拍短视频');
+        },
+      ),
+      Container(width: 16.0),
+    ];
     super.initState();
   }
 
@@ -159,7 +175,11 @@ class _IndexPageState extends State<IndexPage> {
       appBar: AppBar(
         title: Text(this.title, style: AppStyles.TitleStyle),
         backgroundColor: this.headerColor,
-        actions: _mainActions,
+        elevation: 0.0,
+
+        /// 应用栏亮度
+        brightness: Brightness.light,
+        actions: _currentIndex == 3 ? _functionActions : _mainActions,
       ),
       body: PageView.builder(
         itemBuilder: (BuildContext context, int index) {

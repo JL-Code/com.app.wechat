@@ -1,23 +1,22 @@
 import 'package:com_app_wechat/constants.dart';
+import 'package:com_app_wechat/models/choice.dart';
 import 'package:com_app_wechat/models/conversation.dart';
 import 'package:com_app_wechat/constants.dart' show Constants;
+import 'package:com_app_wechat/widget_helper/avatar_helper.dart';
 import 'package:flutter/material.dart';
 
 class ChatPage extends StatelessWidget {
   static const String routeName = "/WeChat";
 
   Widget _buildListView() {
-    return ListView.separated(
+    return ListView.builder(
       itemCount: mockConversationData.length,
       itemBuilder: (BuildContext context, int index) {
         if (index == 0) {
           //TODO: Device值依赖后台传递。
           return _buildDeviceItem(Device.MAC);
         }
-        return _buildListTile(mockConversationData[index]);
-      },
-      separatorBuilder: (context, index) {
-        return Divider(height: 1.0);
+        return _ChatCellItem(conversation: mockConversationData[index]);
       },
     );
   }
@@ -52,93 +51,127 @@ class ChatPage extends StatelessWidget {
     );
   }
 
-  /// 构建列表项
-  ListTile _buildListTile(Conversation item) {
-    /// 徽章
-    //TODO: 勿扰图标和徽章 按需显示
-    Widget badge = Container(
-      padding: EdgeInsets.only(left: 3, right: 3),
-      alignment: Alignment.center,
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(15),
-        color: Colors.redAccent,
-      ),
-      child: Text(
-        item.unreadMsgCount.toString(),
-        style: TextStyle(
-          fontSize: 12,
-          color: Colors.white,
-          fontWeight: FontWeight.bold,
-        ),
-      ),
-    );
-
-    Widget _avatar;
-    if (item.isAvatarFromNet()) {
-      // 使用 FadeInImage 来占位待网络图片加载好了替换。
-      _avatar = FadeInImage.assetNetwork(
-        placeholder: "assets/images/default_nor_avatar.png",
-        image: item.avatar,
-        height: Constants.ContactAvatarSize,
-        width: Constants.ContactAvatarSize,
-        fit: BoxFit.fill,
-      );
-    } else {
-      _avatar = Image.asset(
-        item.avatar,
-        height: Constants.ContactAvatarSize,
-        width: Constants.ContactAvatarSize,
-        fit: BoxFit.fill,
-      );
-    }
-
-    /// 头像
-    Widget avatar = ClipRRect(
-      borderRadius: BorderRadius.circular(5.0),
-      child: _avatar,
-    );
-
-    ///头像组合容器
-    Widget avatarContainer = Stack(
-      overflow: Overflow.visible,
-      children: <Widget>[
-        avatar,
-        Positioned(
-          right: -5,
-          top: -5,
-          child: badge,
-        ),
-      ],
-    );
-
-    return ListTile(
-      title: Text(item.title),
-      leading: avatarContainer,
-      isThreeLine: false,
-      subtitle: Text(
-        item.desc,
-        overflow: TextOverflow.ellipsis,
-        style: TextStyle(
-          fontSize: 12.0,
-        ),
-      ),
-      trailing: Column(
-        children: <Widget>[
-          Text(
-            item.updateAt,
-            style: TextStyle(color: Colors.grey, fontSize: 12),
-          ),
-          SizedBox(height: 10),
-          Icon(Icons.notifications_off, size: 14.0, color: Colors.grey),
-        ],
-      ),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
       body: _buildListView(),
+    );
+  }
+}
+
+class _ChatCellItem extends StatelessWidget {
+  _ChatCellItem({Key key, this.conversation, this.tapPos})
+      : assert(conversation != null),
+        super(key: key);
+
+  final Conversation conversation;
+
+  /// 点击位置
+  Offset tapPos;
+
+  static const VERTICAL_PADDING = 12.0;
+  static const HORIZONTAL_PADDING = 18.0;
+
+  /// 显示上下文菜单
+  void _showMenu(BuildContext context, Offset tapPos) {
+    final RenderBox overlay = Overlay.of(context).context.findRenderObject();
+    final RelativeRect position = RelativeRect.fromLTRB(tapPos.dx, tapPos.dy,
+        overlay.size.width - tapPos.dx, overlay.size.height - tapPos.dy);
+
+    final _defaultChatChoices = <Choice>[
+      Choice(title: "标记未读"),
+      Choice(title: "置顶聊天"),
+      Choice(title: "删除该聊天")
+    ];
+    final _items = _defaultChatChoices.map((Choice choice) {
+      return new PopupMenuItem<Choice>(
+        value: choice,
+        child: new Text(choice.title),
+      );
+    }).toList();
+
+    showMenu<Choice>(context: context, position: position, items: _items)
+        .then((Choice selected) {
+      print("selected:$selected");
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final conversation = this.conversation;
+    final _footerWidgets = <Widget>[
+      Text(
+        conversation.updateAt,
+        style: TextStyle(color: Colors.grey, fontSize: 12),
+      ),
+      SizedBox(height: 10),
+    ];
+    if (conversation.isMute) {
+      _footerWidgets
+          .add(Icon(Icons.notifications_off, size: 14.0, color: Colors.grey));
+    }
+    return Material(
+      color: Color(AppColors.ConversationItemBg),
+      child: InkWell(
+          onTap: () {},
+          onTapDown: (TapDownDetails details) {
+            tapPos = details.globalPosition;
+          },
+          onLongPress: () {
+            _showMenu(context, tapPos);
+          },
+          child: Container(
+            padding: EdgeInsets.only(left: HORIZONTAL_PADDING),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: <Widget>[
+                AvatarHelper.buildAvatar(
+                    conversation.avatar,
+                    Constants.ConversationAvatarSize,
+                    Constants.ConversationAvatarSize,
+                    badge: conversation.unreadMsgCount),
+                Expanded(
+                  child: Container(
+                    padding: const EdgeInsets.only(
+                        left: 12,
+                        top: VERTICAL_PADDING,
+                        right: HORIZONTAL_PADDING,
+                        bottom: VERTICAL_PADDING),
+                    decoration: BoxDecoration(
+                        border: Border(
+                      bottom: BorderSide(
+                          width: Constants.DividerWidth,
+                          color: Color(AppColors.DividerColor)),
+                    )),
+                    child: Row(
+                      children: <Widget>[
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: <Widget>[
+                              Text(
+                                conversation.title,
+                                style: TextStyle(fontSize: 16),
+                              ),
+                              Text(
+                                conversation.desc,
+                                overflow: TextOverflow.ellipsis,
+                                style: TextStyle(
+                                    fontSize: 12.0, color: Colors.grey),
+                              ),
+                            ],
+                          ),
+                        ),
+                        Column(
+                          children: _footerWidgets,
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          )),
     );
   }
 }
