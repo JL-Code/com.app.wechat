@@ -25,22 +25,43 @@ class _IndexPageState extends State<IndexPage> {
   List<Widget> _pages;
   PageController _pageController;
 
+  ///TODO: 首页数据应该被封装到ViewModel
   final items = <BottomNavigationBarItem>[
     new BottomNavigationBarItem(
       title: Text("微信"),
-      icon: Icon(Icons.access_time),
+      icon: Icon(
+        IconData(
+          0xe608,
+          fontFamily: Constants.WeChatIconFontFamily,
+        ),
+      ),
     ),
     new BottomNavigationBarItem(
       title: Text("通讯录"),
-      icon: Icon(Icons.mail),
+      icon: Icon(
+        IconData(
+          0xe601,
+          fontFamily: Constants.WeChatIconFontFamily,
+        ),
+      ),
     ),
     new BottomNavigationBarItem(
       title: Text("发现"),
-      icon: Icon(Icons.search),
+      icon: Icon(
+        IconData(
+          0xe600,
+          fontFamily: Constants.WeChatIconFontFamily,
+        ),
+      ),
     ),
     new BottomNavigationBarItem(
       title: Text("我"),
-      icon: Icon(Icons.person_outline),
+      icon: Icon(
+        IconData(
+          0xe6c0,
+          fontFamily: Constants.WeChatIconFontFamily,
+        ),
+      ),
     )
   ];
 
@@ -174,9 +195,10 @@ class _IndexPageState extends State<IndexPage> {
       bottomNavigationBar: BottomNavigationBar(
         items: items,
         currentIndex: _currentIndex,
-        selectedItemColor: Colors.green,
+        selectedItemColor:
+            const Color(AppColors.BottomNavigationSelectedItemColor),
         selectedFontSize: 12.0,
-        backgroundColor: const Color(AppColors.PrimaryColor),
+        backgroundColor: const Color(AppColors.BottomNavigationBarColor),
         type: BottomNavigationBarType.fixed,
         onTap: (index) {
           _pageController.jumpToPage(index);

@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 class AppColors {
   static const PrimaryColor = 0xffebebeb;
   static const BackgroundColor = 0xffededed;
+  static const BottomNavigationBarColor = 0xfff7f7f7;
+  static const BottomNavigationSelectedItemColor = 0xff0CC161;
   static const AppBarColor = 0xffededed;
   static const ActionIconColor = 0xff000000;
   static const ActionMenuBgColor = 0xff4c4c4c;

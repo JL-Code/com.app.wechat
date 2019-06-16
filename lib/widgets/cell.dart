@@ -17,7 +17,9 @@ class Cell extends StatelessWidget {
         assert(onPressed != null);
 
   static const double CellPadding = 16.0;
-  static const double CellAvatarSize = 20.0;
+  static const TAG_IMG_SIZE = 28.0;
+  static const CellAvatarSize = 24.0;
+  static const TAG_IMG_SIZE_BIG = 32.0;
   static const DOT_RADIUS = 5.0;
 
   /// 显示分割线
@@ -71,7 +73,11 @@ class Cell extends StatelessWidget {
     }
 
     final Widget _cell = Container(
-      padding: EdgeInsets.all(CellPadding),
+      padding: EdgeInsets.only(
+        top: CellPadding,
+        bottom: CellPadding,
+        left: CellPadding,
+      ),
       decoration: BoxDecoration(
         border: _divider,
       ),
@@ -97,7 +103,7 @@ class Cell extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return FlatButton(
-      padding: EdgeInsets.only(left: 15),
+      padding: EdgeInsets.only(left: 0),
       color: Colors.white,
       child: _buildCore(this.iconPath, this.title, this.desc),
       onPressed: this.onPressed,
@@ -106,9 +112,16 @@ class Cell extends StatelessWidget {
 
   /// 构建箭头
   Widget _buildArrow() {
-    return Icon(
-      Icons.keyboard_arrow_right,
-      color: const Color(AppColors.ButtonArrowColor),
+    return Padding(
+      padding: EdgeInsets.symmetric(horizontal: 5),
+      child: Icon(
+        IconData(
+          0xe604,
+          fontFamily: Constants.WeChatIconFontFamily,
+        ),
+        size: 16.0,
+        color: const Color(AppColors.ButtonArrowColor),
+      ),
     );
   }
 
@@ -139,7 +152,8 @@ class Cell extends StatelessWidget {
   /// * [isBig] 图标的大小
   static Widget iconTag(final String path,
       {bool showDot = false, bool isBig = false}) {
-    var _icon = AvatarHelper.buildAvatar(path, CellAvatarSize, CellAvatarSize);
+    var _size = isBig ? TAG_IMG_SIZE_BIG : TAG_IMG_SIZE;
+    var _icon = AvatarHelper.buildAvatar(path, _size, _size);
     if (showDot) {
       return Stack(
         overflow: Overflow.visible,

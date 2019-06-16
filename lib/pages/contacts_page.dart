@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import '../models/contact_viewmodel.dart'
     show ContactViewModel, ContactItemGroup, ContactItem;
 import 'package:com_app_wechat/constants.dart' show Constants, AppColors;
@@ -109,8 +110,8 @@ class _ContactsPageState extends State<ContactsPage> {
             ),
             Expanded(
               child: Container(
-                padding: EdgeInsets.symmetric(
-                    horizontal: 16.0, vertical: Constants.ContactItemPadding),
+                height: ContactItem.height(),
+                alignment: Alignment.centerLeft,
                 decoration: BoxDecoration(
                   border: Border(
                     bottom: BorderSide(
@@ -146,17 +147,12 @@ class _ContactsPageState extends State<ContactsPage> {
     Widget _avatar;
     if (item.isAvatarFromNet) {
       // 使用 FadeInImage 来占位待网络图片加载好了替换。
-      Center(
-        child: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: _avatar = FadeInImage.assetNetwork(
-            placeholder: "assets/images/default_nor_avatar.png",
-            image: item.avatar,
-            height: Constants.ContactAvatarSize,
-            width: Constants.ContactAvatarSize,
-            fit: BoxFit.fill,
-          ),
-        ),
+      _avatar = FadeInImage.assetNetwork(
+        placeholder: "assets/images/default_nor_avatar.png",
+        image: item.avatar,
+        height: Constants.ContactAvatarSize,
+        width: Constants.ContactAvatarSize,
+        fit: BoxFit.fill,
       );
     } else {
       _avatar = Image.asset(
@@ -260,7 +256,7 @@ class _ContactsPageState extends State<ContactsPage> {
         });
       },
 
-      /// 先前与屏幕接触并垂直移动的指针不再与屏幕接触，并且在停止接触屏幕时以特定速度移动
+      /// 先���与屏幕接触并垂直移动的指针不再与屏幕接触，并且在停止接触屏幕时以特定速度移动
       onVerticalDragEnd: (DragEndDetails details) {
         print("onVerticalDragEnd");
 
