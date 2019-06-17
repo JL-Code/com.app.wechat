@@ -50,7 +50,6 @@ class _ContactsPageState extends State<ContactsPage> {
   ScrollController _scrollController;
   final List<Widget> _children = [];
   final Map _letterPosMap = {INDEX_BAR_WORDS[0]: 0.0};
-  final Map _letterKeys = new Map<String, GlobalKey>();
 
   @override
   void initState() {
@@ -65,10 +64,8 @@ class _ContactsPageState extends State<ContactsPage> {
       /// 显示分组标题
       if (group.visible) {
         _letterPosMap[group.groupName] = _pos;
-        _letterKeys[group.groupName] = GlobalKey(debugLabel: group.groupName);
         _pos += ContactItemGroup.height();
         _children.add(Row(
-          key: _letterKeys[group.groupName],
           children: <Widget>[
             Expanded(
               child: Container(
@@ -103,8 +100,8 @@ class _ContactsPageState extends State<ContactsPage> {
               padding: EdgeInsets.only(
                 left: Constants.ContactItemPadding,
                 right: Constants.ContactItemPadding,
-                top: 8,
-                bottom: 8,
+                top: 4,
+                bottom: 4,
               ),
               child: _buildAvatar(item),
             ),
@@ -169,6 +166,7 @@ class _ContactsPageState extends State<ContactsPage> {
   }
 
   /// 得到选中的字母
+  /// TODO:选中的字母需要突出显示
   String _getLetter(BuildContext context, double tileHeight, Offset globalPos) {
     RenderBox _box = context.findRenderObject();
     // 全局坐标转Widget内的坐标
@@ -204,17 +202,10 @@ class _ContactsPageState extends State<ContactsPage> {
     if (_letterPosMap.isNotEmpty) {
       print("letter : $letter");
       final _pos = _letterPosMap[letter];
-//      GlobalKey key = _letterKeys[letter];
-//      if (key != null) {
-//        _getSize(key);
-//        final Offset offset = _getPosition(key);
-//        print("target: $_pos");
-//        print("tareget computed offset: $offset");
-//        print("tareget computed offset - appbarHeight: ${offset.dy - 72.4}");
-//      }
       if (_pos != null) {
-        _scrollController.animateTo(_pos,
-            curve: Curves.easeOut, duration: Duration(milliseconds: 200));
+//        _scrollController.animateTo(_pos,
+//            curve: Curves.easeOut, duration: Duration(milliseconds: 10));
+        _scrollController.jumpTo(_pos);
       }
     }
   }

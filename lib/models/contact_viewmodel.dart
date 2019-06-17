@@ -5,11 +5,10 @@
  * @Version: 
  */
 import 'package:flutter/material.dart';
+import 'package:english_words/english_words.dart';
 import '../constants.dart' show Constants;
 
 class ContactViewModel {
-  // var contactMap = new Map<String, List<ContactItem>>();
-  // var indexList = ["A", "B", "C", "D"];
   static final data = new List<ContactItemGroup>();
 
   static List<ContactItemGroup> build() {
@@ -37,7 +36,36 @@ class ContactViewModel {
       ]),
     );
 
-    final letters = ["A", "B", "C", "D", "E", "T", "W"];
+    final letters = [
+      "A",
+      "B",
+      "C",
+      "D",
+      "E",
+      "F",
+      "G",
+      "H",
+      "I",
+      "J",
+      "K",
+      "L",
+      "M",
+      "N",
+      "O",
+      "P",
+      "Q",
+      "R",
+      "S",
+      "T",
+      "U",
+      "V",
+      "W",
+      "X",
+      "Y",
+      "Z"
+    ];
+    final List<WordPair> words = generateWordPairs().take(300).toList();
+    int _wordIndex = 0;
     for (var i = 0; i < letters.length; i++) {
       var _letter = letters[i];
       var _items = <ContactItem>[];
@@ -45,13 +73,13 @@ class ContactViewModel {
         groupName: _letter,
         items: _items,
       );
-      for (var i = 0; i < 3; i++) {
-        int _index = 70 + i;
+      for (var i = 0; i < 5; i++) {
         _items.add(ContactItem(
-          avatar: 'https://randomuser.me/api/portraits/women/$_index.jpg',
-          title: '汤姆丁_$_letter',
+          avatar: 'https://randomuser.me/api/portraits/women/${70 + i}.jpg',
+          title: words[_wordIndex].asPascalCase,
           nameIndex: _letter,
         ));
+        _wordIndex++;
       }
       data.add(_group);
     }
@@ -92,7 +120,7 @@ class ContactItem {
   }
 
   static double height() {
-    return Constants.ContactAvatarSize + Constants.ContactItemPadding;
+    return Constants.ContactAvatarSize + Constants.ContactItemPadding / 2;
   }
 }
 

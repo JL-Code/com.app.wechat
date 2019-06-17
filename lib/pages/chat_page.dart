@@ -67,7 +67,7 @@ class _ChatCellItem extends StatelessWidget {
   final Conversation conversation;
 
   /// 点击位置
-  Offset tapPos;
+  final Offset tapPos;
 
   static const VERTICAL_PADDING = 12.0;
   static const HORIZONTAL_PADDING = 18.0;
@@ -98,6 +98,7 @@ class _ChatCellItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    Offset tapPos = this.tapPos;
     final conversation = this.conversation;
     final _footerWidgets = <Widget>[
       Text(
@@ -130,10 +131,10 @@ class _ChatCellItem extends StatelessWidget {
                     Constants.ConversationAvatarSize,
                     Constants.ConversationAvatarSize,
                     badge: conversation.unreadMsgCount),
+                SizedBox(width: 12),
                 Expanded(
                   child: Container(
                     padding: const EdgeInsets.only(
-                        left: 12,
                         top: VERTICAL_PADDING,
                         right: HORIZONTAL_PADDING,
                         bottom: VERTICAL_PADDING),
